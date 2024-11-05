@@ -22,10 +22,12 @@ runs:
         python-version: '3.8'
 
     - name: Install dependencies
+      shell: bash  # Specify shell type
       run: |
         pip install -r requirements.txt
 
     - name: Run spam detection
+      shell: bash  # Specify shell type
       run: |
         python detect_spam.py "${{ inputs.comment_body }}"
       env:
@@ -33,7 +35,7 @@ runs:
 
     - name: Process result
       id: check_spam
+      shell: bash  # Specify shell type
       run: |
         IS_SPAM=$(jq '.is_spam' is_spam_output.json)
-        echo "is_spam=$IS_SPAM" >> $GITHUB_OUTPUT
-
+        echo "is_spam=$IS_SPAM" >> $GITHUB_ENV
