@@ -12,7 +12,7 @@ inputs:
 
 outputs:
   is_spam:
-    description: "Boolean indicating if comment is spam"
+    description: "JSON string indicating if comment is spam"
 
 runs:
   using: "composite"
@@ -20,23 +20,14 @@ runs:
     - name: Set up Python
       uses: actions/setup-python@v4
       with:
-        python-version: '3.11' # or any version that supports your model
+        python-version: '3.11'
 
     - name: Install dependencies
       shell: bash
       run: pip install -r requirements.txt
 
-    - name: Run spam detection
-      id: spam_detection
-      shell: bash
-      run: python detect_spam.py "${{ inputs.comment_body }}"
-      env:
-        GITHUB_TOKEN: ${{ inputs.github_token }}
-        
-    - name: Process result
-      id: check_spam
-      shell: bash
+    - id: spam_detection
       run: |
-        echo "is_spam=$(python -c 'import sys, json; print(json.load(sys.stdin)["is_spam"])')" >> $GITHUB_OUTPUT
-      env:
-        INPUT_JSON: ${{ steps.spam_detection.outputs.result }}
+        result=$(python detect_spam.py "${{ inputs.comment_body }}")
+        echo "is_spam=${result}" >> ${GITHUB_OUTPUT}
+      shell: bash
