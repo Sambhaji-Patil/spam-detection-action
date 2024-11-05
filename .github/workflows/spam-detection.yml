@@ -21,8 +21,9 @@ jobs:
         comment_body: ${{ github.event.comment.body }}
 
     - name: Hide Comment if Spam
-      if: steps.moderate_comment.outputs.is_spam == 'true'
+      if: ${{ steps.check_spam.outputs.is_spam == 'true' }}  # Ensure this matches the output ID
       run: |
         gh api -X PATCH /repos/${{ github.repository }}/issues/comments/${{ github.event.comment.id }} -f body='[Hidden by automated moderation: spam detected]'
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+

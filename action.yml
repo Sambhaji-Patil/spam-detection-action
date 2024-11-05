@@ -35,4 +35,5 @@ runs:
       id: check_spam
       run: |
         IS_SPAM=$(jq '.is_spam' is_spam_output.json)
-        echo "is_spam=$IS_SPAM" >> $GITHUB_ENV
+        echo "is_spam=$IS_SPAM" >> $GITHUB_OUTPUT
+
