@@ -1,3 +1,4 @@
+# .github/workflows/spam_detection.yml
 name: Spam Detection
 
 on:
@@ -9,6 +10,10 @@ on:
 jobs:
   moderate_comment:
     runs-on: ubuntu-latest
+    permissions:
+      issues: write
+      pull-requests: write
+
 
     steps:
     - name: Checkout code
@@ -21,9 +26,8 @@ jobs:
         comment_body: ${{ github.event.comment.body }}
 
     - name: Hide Comment if Spam
-      if: ${{ steps.check_spam.outputs.is_spam == 'true' }}  # Ensure this matches the output ID
+      if: ${{ steps.check_spam.outputs.is_spam }}
       run: |
         gh api -X PATCH /repos/${{ github.repository }}/issues/comments/${{ github.event.comment.id }} -f body='[Hidden by automated moderation: spam detected]'
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
