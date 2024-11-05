@@ -18,6 +18,6 @@ try:
     print(json.dumps(result))
 
 except Exception as e:
-    print(f"Error: {e}", file=sys.stderr)  # Print errors to stderr
-    # Handle the error as needed (e.g., exit with a non-zero code)
-    sys.exit(1)
+    print(f"Error: {e}", file=sys.stderr)  # Log the error
+    print(json.dumps({"is_spam": False}))   # Default to False in case of error
+    sys.exit(1) # Indicate failure
