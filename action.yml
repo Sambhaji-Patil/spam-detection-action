@@ -1,0 +1,32 @@
+name: Spam Detection Action
+description: Detects spam comments using a pre-trained ML model.
+inputs:
+  github_token:
+    description: "GitHub token for authentication"
+    required: true
+  comment_body:
+    description: "Comment text to check"
+    required: true
+outputs:
+  is_spam:
+    description: "Boolean indicating if comment is spam"
+runs:
+  using: "composite"
+  steps:
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: '3.8'
+    - name: Install dependencies
+      run: |
+        pip install -r requirements.txt
+    - name: Run spam detection
+      run: |
+        python detect_spam.py "${{ inputs.comment_body }}"
+      env:
+        GITHUB_TOKEN: ${{ inputs.github_token }}
+    - name: Process result
+      id: check_spam
+      run: |
+        IS_SPAM=$(jq '.is_spam' is_spam_output.json)
+        echo "::set-output name=is_spam::$IS_SPAM"

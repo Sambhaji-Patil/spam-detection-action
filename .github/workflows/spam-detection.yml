@@ -1,0 +1,28 @@
+name: Spam Detection
+
+on:
+  issue_comment:
+    types: [created]
+  pull_request_review_comment:
+    types: [created]
+
+jobs:
+  moderate_comment:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Run Spam Detection
+      uses: ./  # Runs the Action from the root of the current repo
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        comment_body: ${{ github.event.comment.body }}
+
+    - name: Hide Comment if Spam
+      if: steps.moderate_comment.outputs.is_spam == 'true'
+      run: |
+        gh api -X PATCH /repos/${{ github.repository }}/issues/comments/${{ github.event.comment.id }} -f body='[Hidden by automated moderation: spam detected]'
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
