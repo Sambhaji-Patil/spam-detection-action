@@ -1,16 +1,23 @@
+# detect_spam.py
 import sys
+import json
 import joblib
 
-# Load model
-model = joblib.load("spam_detector_model.pkl")
+try:
+    # Load model
+    model = joblib.load("spam_detector_model.pkl")
 
-# Process input
-comment_text = sys.argv[1]
+    # Process input
+    comment_text = sys.argv[1]
 
-# Predict
-is_spam = model.predict([comment_text])[0]
+    # Predict
+    is_spam = model.predict([comment_text])[0]
 
-# Output result
-with open("is_spam_output.json", "w") as f:
-    f.write(f'{{"is_spam": {is_spam}}}')
-print(f'Output written: {{"is_spam": {is_spam}}}')  # Add this line for debugging
+    # Output result as JSON to stdout
+    result = {"is_spam": bool(is_spam)}
+    print(json.dumps(result))
+
+except Exception as e:
+    print(f"Error: {e}", file=sys.stderr)  # Print errors to stderr
+    # Handle the error as needed (e.g., exit with a non-zero code)
+    sys.exit(1)
