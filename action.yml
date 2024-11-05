@@ -20,19 +20,22 @@ runs:
       uses: actions/setup-python@v2
       with:
         python-version: '3.8'
+        
     - name: Install dependencies
-      shell: bash  # Ensure shell is specified
+      shell: bash
       run: |
         pip install -r requirements.txt
+        
     - name: Run spam detection
-      shell: bash  # Ensure shell is specified
+      shell: bash
       run: |
         python detect_spam.py "${{ inputs.comment_body }}"
       env:
         GITHUB_TOKEN: ${{ inputs.github_token }}
+        
     - name: Process result
       id: check_spam
-      shell: bash  # Ensure shell is specified
+      shell: bash
       run: |
         IS_SPAM=$(jq '.is_spam' is_spam_output.json)
         echo "is_spam=$IS_SPAM" >> $GITHUB_ENV
