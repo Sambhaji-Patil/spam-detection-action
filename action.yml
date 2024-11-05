@@ -1,4 +1,3 @@
-# action.yml
 name: Spam Detection Action
 description: Detects spam comments using a pre-trained ML model.
 
@@ -17,8 +16,7 @@ outputs:
 runs:
   using: "composite"
   steps:
-    - name: Set up Python
-      uses: actions/setup-python@v4
+    - uses: actions/setup-python@v4
       with:
         python-version: '3.11'
 
@@ -28,6 +26,6 @@ runs:
 
     - id: spam_detection
       run: |
-        result=$(python detect_spam.py "${{ inputs.comment_body }}")
-        echo "is_spam=${result}" >> ${GITHUB_OUTPUT}
+        IS_SPAM=$(python detect_spam.py "${{ inputs.comment_body }}")
+        echo "is_spam=${IS_SPAM}" >> ${GITHUB_OUTPUT}
       shell: bash
