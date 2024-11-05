@@ -24,9 +24,9 @@ jobs:
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
         comment_body: ${{ github.event.comment.body }}
-
+# spam_detection.yml (Corrected)
     - name: Hide Comment if Spam
-      if: ${{ fromJSON(steps.check_spam.outputs.is_spam).is_spam }} # Access with fromJSON
+      if: fromJSON(steps.spam_detection.outputs.is_spam).is_spam # Access the 'is_spam' property correctly
       run: |
         gh api -X PATCH /repos/${{ github.repository }}/issues/comments/${{ github.event.comment.id }} -f body='[Hidden by automated moderation: spam detected]'
       env:
